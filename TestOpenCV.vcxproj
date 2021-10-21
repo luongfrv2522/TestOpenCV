@@ -147,6 +147,12 @@
   <ItemGroup>
     <Image Include="Resources\17_cau.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header.h" />
+    <ClInclude Include="TestFindCircle.h" />
+    <ClInclude Include="TestFindCircle2.h" />
+    <ClInclude Include="TestFindRect.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
