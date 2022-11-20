@@ -23,6 +23,18 @@
     <Image Include="Resources\17_cau.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\50_cau.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\50_cau_sau_khi_crop.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\50_cau_sau_khi_crop_lan_2.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\50_cau_raw.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestFindRect.h">
@@ -37,5 +49,11 @@
     <ClInclude Include="TestFindCircle2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AutomaticGrading.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\50 cau_origin.pdf" />
   </ItemGroup>
 </Project>
