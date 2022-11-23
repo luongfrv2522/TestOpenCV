@@ -104,98 +104,119 @@ int main()
 
         persTrans(contours4BasePoint, contours4BasePoint, matrix);
         persTrans(contoursSubBasePoint, contoursSubBasePoint, matrix);
+        r1 = boundingRect(contours4BasePoint[0]);
+        r2 = boundingRect(contours4BasePoint[1]);
+        r3 = boundingRect(contours4BasePoint[2]);
+        r4 = boundingRect(contours4BasePoint[3]);
 
         //drawToContour(outMat, contours4BasePoint);
 
-        sort(contoursSubBasePoint.begin(), contoursSubBasePoint.end(), Top_Bottom_contour_sorter());
         #pragma region Chia phần câu hỏi và mã đề
+        sort(contoursSubBasePoint.begin(), contoursSubBasePoint.end(), Top_Bottom_contour_sorter());
         vector<vector<Point>> contoursSubCodeBasePoint;
         vector<vector<Point>> contoursSubAnswerBasePoint;
         for (size_t i = 0; i < contoursSubBasePoint.size(); i++) {
-			if (contoursSubBasePoint[i][0].y < hCodeVsAnswer) {
+            Rect boundIt = boundingRect(contoursSubBasePoint[i]);
+            if (boundIt.y < r1.y || boundIt.y > r4.br().y || boundIt.x < r1.x || boundIt.x > r4.br().x) continue;
+			if (boundIt.y < hCodeVsAnswer) {
                 contoursSubCodeBasePoint.push_back(contoursSubBasePoint[i]);
             }
             else {
                 contoursSubAnswerBasePoint.push_back(contoursSubBasePoint[i]);
             }
         }
-        myDrawContours(outMat, contoursSubCodeBasePoint, BEP_SCALAR_YELLOW, false);
-        myDrawContours(outMat, contoursSubAnswerBasePoint, BEP_SCALAR_GREEN, false);
+        //myDrawContours(outMat, contoursSubCodeBasePoint, BEP_SCALAR_YELLOW, false);
+        //myDrawContours(outMat, contoursSubAnswerBasePoint, BEP_SCALAR_GREEN, true);
         #pragma endregion
 
         #pragma region Tìm hình chữ nhật cơ sở của số báo danh và mã đề
+        vector<vector<Point>> subCodeBase4PointContours = {
+            contoursSubCodeBasePoint[0],
+            contoursSubCodeBasePoint[1],
+            contoursSubCodeBasePoint[contoursSubCodeBasePoint.size() - 2],
+            contoursSubCodeBasePoint[contoursSubCodeBasePoint.size() - 1]
+        };
+        bepSort_Lef2Right_Top2Bottom(subCodeBase4PointContours, 2);
+        //
+        myDrawContours(outMat, subCodeBase4PointContours, BEP_SCALAR_YELLOW, true);
+        //
         vector<Rect> subCodeBase4Point;
-        subCodeBase4Point.push_back(boundingRect(contoursSubCodeBasePoint[0]));
-        subCodeBase4Point.push_back(boundingRect(contoursSubCodeBasePoint[1]));
-        subCodeBase4Point.push_back(boundingRect(contoursSubCodeBasePoint[contoursSubCodeBasePoint.size()-2]));
-        subCodeBase4Point.push_back(boundingRect(contoursSubCodeBasePoint[contoursSubCodeBasePoint.size()-1]));
+        for (rsize_t i = 0; i < subCodeBase4PointContours.size(); i++) {
+            subCodeBase4Point.push_back(boundingRect(subCodeBase4PointContours[i]));
+        }
         //
         Mat identityMat = outMat(Rect(
             subCodeBase4Point[0].br().x,
             subCodeBase4Point[0].br().y,
-            subCodeBase4Point[0].width * 9,
-            subCodeBase4Point[2].tl().y - subCodeBase4Point[0].br().y
+            subCodeBase4Point[3].tl().x - subCodeBase4Point[0].br().x,
+            subCodeBase4Point[3].tl().y - subCodeBase4Point[0].br().y
         ));
-        /*Mat codeMat = outMat(Rect(
+        Mat codeMat = outMat(Rect(
             subCodeBase4Point[1].br().x,
             subCodeBase4Point[1].br().y,
             subCodeBase4Point[1].width * 5,
-            subCodeBase4Point[3].br().y - subCodeBase4Point[1].br().y
-        ));*/
+            subCodeBase4Point[3].tl().y - subCodeBase4Point[1].br().y
+        ));
 
-        #pragma region show Image3.5
-        /*for (int i = 0; i < 10; i++) {
-            line(identityMat,
-                Point(0, identityMat.size().height / 10 * (i+1)),
-                Point(identityMat.size().height, identityMat.size().height / 10 * (i + 1)),
-                BEP_SCALAR_BLUE,
-                1,
-                LINE_8
-            );
-        }*/
         //Tìm viền các hình tô đậm
-        Mat identityMatTempThesh;
-        cvtColor(identityMat, identityMatTempThesh, COLOR_BGR2GRAY);
-        threshold(identityMatTempThesh, identityMatTempThesh, 0, 255,THRESH_BINARY_INV | THRESH_OTSU);
-        //
-        vector<vector<Point>> codeContours;
-        vector<vector<Point>> codeContoursToSort;
-        findContours(identityMatTempThesh, codeContours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-        imshow("Image3.5", identityMatTempThesh);
-        for (size_t i = 0; i < codeContours.size(); i++) {
-            Rect r = boundingRect(codeContours[i]);
-            bool flagRect = r.width / (double)r.height < 1.5 && r.width / (double)r.height > 0.75 && r.area() < 1000 && r.area() > 50;
-            if (flagRect) {
-                codeContoursToSort.push_back(codeContours[i]);
-            }
-        }
-        sort(codeContoursToSort.begin(), codeContoursToSort.end(), Left_Right_contour_sorter());
-        int roundLine = 10;
-        String identityNum;
-        for (size_t i = 0; i < codeContoursToSort.size(); i = i + roundLine) {
-            int tempVal = -1;
-            int indexIdentityNum = 0;
-            sort(codeContoursToSort.begin() + i, codeContoursToSort.begin() + i + roundLine, Top_Bottom_contour_sorter());
-            for (size_t j = i; j < i + roundLine; j++) {
-                Rect boundCodeContours = boundingRect(codeContoursToSort[j]);
-                Mat mask = Mat(boundCodeContours.height, boundCodeContours.width, uchar(0));
-                fillPoly(mask, codeContoursToSort, Scalar(255), 8, 0, -boundCodeContours.tl());
-                Mat cropped = identityMatTempThesh(boundCodeContours) & mask;
-                int countNonZe = countNonZero(cropped);
-                if (countNonZe > (boundCodeContours.width * boundCodeContours.height) / 2) {
-                    tempVal = indexIdentityNum;
-                }
-                indexIdentityNum++;
-            }
-            identityNum = identityNum +"|" + to_string(tempVal);
-        }
-
+        vector<int> identityNum;
+        vector<int> codeNum;
+        bepDetectHeaderCode(identityMat, identityNum, 10);
+        bepDetectHeaderCode(codeMat, codeNum, 10);
         //myDrawContours(identityMat, codeContoursToSort);
+        string strIdentityNum;
+        for (int it : identityNum) {
+            strIdentityNum += "|" + to_string(it);
+        }
+        putText(outMat, strIdentityNum, subCodeBase4Point[0].br(), FONT_HERSHEY_SIMPLEX, .5, BEP_SCALAR_BLUE, 2);
+        string strCodeNum;
+        for (int it : codeNum) {
+            strCodeNum += "|" + to_string(it);
+        }
+        putText(outMat, strCodeNum, subCodeBase4Point[1].br(), FONT_HERSHEY_SIMPLEX, .5, BEP_SCALAR_BLUE, 2);
+        #pragma endregion
 
-        putText(outMat, identityNum, subCodeBase4Point[0].br(), FONT_HERSHEY_SIMPLEX, 0.5, BEP_SCALAR_BLUE, 2);
-        imshow("Image3.6", identityMat);
-        //imshow("Image3.6", codeMat);
-        #pragma endregion show Image3.5
+        #pragma region Tìm các hình cơ sở của câu trả lời
+        sort(contoursSubAnswerBasePoint.begin(), contoursSubAnswerBasePoint.end(), Top_Bottom_contour_sorter());
+        vector<vector<Point>> subCodeBase6PointContours_Top = {
+            contoursSubAnswerBasePoint[0],
+            contoursSubAnswerBasePoint[1],
+            contoursSubAnswerBasePoint[2]
+        };
+        sort(subCodeBase6PointContours_Top.begin(), subCodeBase6PointContours_Top.end(), Left_Right_contour_sorter());
+        vector<Rect> subCodeBase6PointContours_Top_Bound;
+        for (rsize_t i = 0; i < subCodeBase6PointContours_Top.size(); i++) {
+            subCodeBase6PointContours_Top_Bound.push_back(boundingRect(subCodeBase6PointContours_Top[i]));
+        }
+        vector<vector<Point>> subCodeBase6PointContours_Bottom = {
+            contoursSubAnswerBasePoint[contoursSubAnswerBasePoint.size() - 3],
+            contoursSubAnswerBasePoint[contoursSubAnswerBasePoint.size() - 2],
+            contoursSubAnswerBasePoint[contoursSubAnswerBasePoint.size() - 1]
+        };
+        sort(subCodeBase6PointContours_Bottom.begin(), subCodeBase6PointContours_Bottom.end(), Left_Right_contour_sorter());
+        vector<Rect> subCodeBase6PointContours_Bottom_Bound;
+        for (rsize_t i = 0; i < subCodeBase6PointContours_Bottom.size(); i++) {
+            subCodeBase6PointContours_Bottom_Bound.push_back(boundingRect(subCodeBase6PointContours_Bottom[i]));
+        }
+        vector<Mat> matAnswerArr;
+        for (rsize_t i = 0; i < subCodeBase6PointContours_Top_Bound.size(); i++) {
+            Rect boundSubCodeBase6_Top = subCodeBase6PointContours_Top_Bound[i];
+            //
+            rsize_t fitSize = subCodeBase6PointContours_Top_Bound.size() > i + 1 ? i : i - 1;
+            Rect boundSubCodeBase6_Fit_TL = subCodeBase6PointContours_Top_Bound[fitSize];
+            Rect boundSubCodeBase6_Fit_BR = subCodeBase6PointContours_Bottom_Bound[fitSize + 1];
+            
+            Mat asw = outMat(Rect(
+                boundSubCodeBase6_Top.br().x,
+                boundSubCodeBase6_Top.br().y,
+                boundSubCodeBase6_Fit_BR.tl().x - boundSubCodeBase6_Fit_TL.br().x,
+                boundSubCodeBase6_Fit_BR.tl().y - boundSubCodeBase6_Fit_TL.br().y
+            ));
+            matAnswerArr.push_back(asw);
+            imshow("Image33_"+to_string(i+1), asw);
+        }
+        myDrawContours(outMat, subCodeBase6PointContours_Top, BEP_SCALAR_GREEN, true);
+        myDrawContours(outMat, subCodeBase6PointContours_Bottom, BEP_SCALAR_GREEN, true);
         #pragma endregion
     }
     else if (contoursToSort.size() < 4) {
