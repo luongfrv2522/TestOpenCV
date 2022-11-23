@@ -13,6 +13,11 @@ Scalar BEP_SCALAR_BLUE = Scalar(255, 0, 0, 255);
 Scalar BEP_SCALAR_RED = Scalar(0, 0, 255, 255);
 Scalar BEP_SCALAR_YELLOW = Scalar(0, 255, 255, 255);
 
+static enum BepDetect_Type {
+	Top2Bottom_Left2Right,
+	Left2Right_Top2Bottom
+};
+
 struct Left_Right_contour_sorter // 'less' for contours
 {
 	bool operator ()(const vector<Point>& a, const vector<Point>& b)
@@ -98,8 +103,16 @@ void bepDrawPointContours(Mat& src, vector<vector<Point>> contours, Scalar color
 	}
 }
 
-void bepDetectHeaderCode(Mat& identityMat, vector<int>& identityNum, int roundLine) {
-
+void bepDetect(Mat& identityMat, vector<int>& identityNum, int roundLine, BepDetect_Type type) {
+	function<int(vector<Point>&, vector<Point>&)> firstPred, secondPred;
+	if (type == Top2Bottom_Left2Right) {
+		firstPred = Left_Right_contour_sorter();
+		secondPred = Top_Bottom_contour_sorter();
+	}
+	else if(Left2Right_Top2Bottom) {
+		firstPred = Top_Bottom_contour_sorter();
+		secondPred = Left_Right_contour_sorter();
+	}
 	Mat identityMatTempThesh;
 	cvtColor(identityMat, identityMatTempThesh, COLOR_BGR2GRAY);
 	threshold(identityMatTempThesh, identityMatTempThesh, 0, 255, THRESH_BINARY_INV | THRESH_OTSU);
@@ -115,10 +128,10 @@ void bepDetectHeaderCode(Mat& identityMat, vector<int>& identityNum, int roundLi
 			codeContoursToSort.push_back(codeContours[i]);
 		}
 	}
-	sort(codeContoursToSort.begin(), codeContoursToSort.end(), Left_Right_contour_sorter());
+	sort(codeContoursToSort.begin(), codeContoursToSort.end(), firstPred);
 	for (size_t i = 0; i < codeContoursToSort.size(); i = i + roundLine) {
 		int tempVal = -1;
-		sort(codeContoursToSort.begin() + i, codeContoursToSort.begin() + i + roundLine, Top_Bottom_contour_sorter());
+		sort(codeContoursToSort.begin() + i, codeContoursToSort.begin() + i + roundLine, secondPred);
 		for (size_t j = i; j < i + roundLine; j++) {
 			Rect boundCodeContours = boundingRect(codeContoursToSort[j]);
 			Mat mask = Mat(boundCodeContours.height, boundCodeContours.width, uchar(0));
@@ -137,6 +150,7 @@ void bepDetectHeaderCode(Mat& identityMat, vector<int>& identityNum, int roundLi
 		identityNum.push_back(tempVal);
 	}
 }
+
 
 void bepSort_Top2Bottom_Lef2Right(vector<vector<Point>>& input, int roundLine) {
 	sort(input.begin(), input.end(), Left_Right_contour_sorter());

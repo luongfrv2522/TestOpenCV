@@ -161,8 +161,8 @@ int main()
         //Tìm viền các hình tô đậm
         vector<int> identityNum;
         vector<int> codeNum;
-        bepDetectHeaderCode(identityMat, identityNum, 10);
-        bepDetectHeaderCode(codeMat, codeNum, 10);
+        bepDetect(identityMat, identityNum, 10, Top2Bottom_Left2Right);
+        bepDetect(codeMat, codeNum, 10, Top2Bottom_Left2Right);
         //myDrawContours(identityMat, codeContoursToSort);
         string strIdentityNum;
         for (int it : identityNum) {
@@ -213,7 +213,32 @@ int main()
                 boundSubCodeBase6_Fit_BR.tl().y - boundSubCodeBase6_Fit_TL.br().y
             ));
             matAnswerArr.push_back(asw);
-            imshow("Image33_"+to_string(i+1), asw);
+            //
+            vector<int> valuers;
+            bepDetect(asw, valuers, 4, Left2Right_Top2Bottom);
+            string strValuers;
+            for (int it : valuers) {
+                strValuers += "|";
+                switch (it)
+                {
+                case 0:
+                    strValuers += "A";
+                    break;
+                case 1:
+                    strValuers += "B";
+                    break;
+                case 2:
+                    strValuers += "C";
+                    break;
+                case 3:
+                    strValuers += "D";
+                    break;
+                default:
+                    break;
+                }
+            }
+            cout << "values: " << strValuers << endl;
+            putText(outMat, strValuers, boundSubCodeBase6_Top.br(), FONT_HERSHEY_SIMPLEX, .5, BEP_SCALAR_BLUE, 2);
         }
         myDrawContours(outMat, subCodeBase6PointContours_Top, BEP_SCALAR_GREEN, true);
         myDrawContours(outMat, subCodeBase6PointContours_Bottom, BEP_SCALAR_GREEN, true);
