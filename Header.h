@@ -50,7 +50,7 @@ void myResize(Mat& img, Mat& imgReSize) {
 	resize(img, imgReSize, Size(), 1, 1);
 }
 
-void persTrans(vector<vector<Point>> &inputMat, vector<vector<Point>> &dst, Mat& matrix) {
+void persTrans(vector<vector<Point>>& inputMat, vector<vector<Point>>& dst, Mat& matrix) {
 	for (int i = 0; i < inputMat.size(); i++) {
 		vector<Point2f> contour0;
 		Mat(inputMat[i]).convertTo(contour0, Mat(contour0).type());
@@ -69,7 +69,7 @@ void myDrawContours(Mat& src, vector<vector<Point>> contours, Scalar color, bool
 		Point point4 = Point((r.br() + r.tl()) * .5);
 		//circle(src, point4, 1, 255, 3);
 		rectangle(src, r, color, 2, 8, 0);
-		String text = to_string(i+1);
+		String text = to_string(i + 1);
 		cout << text << endl;
 		if (hasLabel) {
 			putText(src, text, point4, FONT_HERSHEY_SIMPLEX, 0.5, BEP_SCALAR_BLUE, 2);
@@ -83,18 +83,18 @@ void myDrawContours(Mat& src, vector<vector<Point>> contours) {
 	myDrawContours(src, contours, BEP_SCALAR_GREEN, false);
 }
 
-void bepDrawCircleOfContour(Mat& src, vector<Point> contour, Scalar color, int thickness = 1) {
+void bep_DrawCircleOfContour(Mat& src, vector<Point> contour, Scalar color, int thickness = 1) {
 	Rect r = boundingRect(contour);
 	//
 	Point point4 = Point((r.br() + r.tl()) * .5);
 	circle(src, point4, (r.width + r.height) / 4, color, thickness, 0);
 }
 
-void bepDrawPointContours(Mat& src, vector<vector<Point>> contours, Scalar color, bool hasLabel) {
+void bep_DrawPointContours(Mat& src, vector<vector<Point>> contours, Scalar color, bool hasLabel) {
 	int count = 0;
 	for (size_t i = 0; i < contours.size(); i++) {
 		count++;
-		bepDrawCircleOfContour(src, contours[i], color);
+		bep_DrawCircleOfContour(src, contours[i], color);
 		String text = to_string(count);
 		cout << text << endl;
 		if (hasLabel) {
@@ -103,13 +103,13 @@ void bepDrawPointContours(Mat& src, vector<vector<Point>> contours, Scalar color
 	}
 }
 
-void bepDetectCircleMatrix(Mat& identityMat, vector<int>& identityNum, int roundLine, BepDetect_Type type) {
+void bep_DetectCircleMatrix(Mat& identityMat, vector<int>& identityNum, int roundLine, BepDetect_Type type) {
 	function<int(vector<Point>&, vector<Point>&)> firstPred, secondPred;
 	if (type == Top2Bottom_Left2Right) {
 		firstPred = Left_Right_contour_sorter();
 		secondPred = Top_Bottom_contour_sorter();
 	}
-	else if(Left2Right_Top2Bottom) {
+	else if (Left2Right_Top2Bottom) {
 		firstPred = Top_Bottom_contour_sorter();
 		secondPred = Left_Right_contour_sorter();
 	}
@@ -140,7 +140,7 @@ void bepDetectCircleMatrix(Mat& identityMat, vector<int>& identityNum, int round
 			int countNonZe = countNonZero(cropped);
 			if (countNonZe > (boundCodeContours.width * boundCodeContours.height) / 2) {
 				tempVal = j - i;
-				bepDrawCircleOfContour(identityMat, codeContoursToSort[j], BEP_SCALAR_GREEN, 2);
+				bep_DrawCircleOfContour(identityMat, codeContoursToSort[j], BEP_SCALAR_GREEN, 2);
 				break;
 			}
 		}
@@ -151,16 +151,34 @@ void bepDetectCircleMatrix(Mat& identityMat, vector<int>& identityNum, int round
 	}
 }
 
-
-void bepSort_Top2Bottom_Lef2Right(vector<vector<Point>>& input, int roundLine) {
+void bep_Sort_Top2Bottom_Lef2Right(vector<vector<Point>>& input, int roundLine) {
 	sort(input.begin(), input.end(), Left_Right_contour_sorter());
 	for (size_t i = 0; i < input.size(); i = i + roundLine) {
 		sort(input.begin() + i, input.begin() + i + roundLine, Top_Bottom_contour_sorter());
 	}
 }
-void bepSort_Lef2Right_Top2Bottom(vector<vector<Point>>& input, int roundLine) {
+void bep_Sort_Lef2Right_Top2Bottom(vector<vector<Point>>& input, int roundLine) {
 	sort(input.begin(), input.end(), Top_Bottom_contour_sorter());
 	for (size_t i = 0; i < input.size(); i = i + roundLine) {
 		sort(input.begin() + i, input.begin() + i + roundLine, Left_Right_contour_sorter());
 	}
+}
+
+void bep_ImResizeAndShow(string title, Mat& img, int w, int h) {
+	Mat imgReSize;
+	resize(img, imgReSize, Size(w, h));
+	imshow(title, imgReSize);
+}
+
+int bep_RandomIntInRange(int start, int end) {
+	return rand() % end + start;
+}
+
+double bep_Round(double num, int afterPoint = 0) {
+	int deter = 1;
+	while (afterPoint > 0) {
+		deter += 10;
+		afterPoint--;
+	}
+	return round(num * deter) / deter;
 }
