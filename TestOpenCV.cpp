@@ -35,7 +35,7 @@ void bepMainDetect(Mat& img, string identity) {
         Mat elementErode = getStructuringElement(MORPH_RECT, Size(3, 3), Point(1, 1));
         erode(imgDilate, imgDilate, elementErode, Point(-1, -1), 3);
 #pragma region show Image2.1
-      /*  resize(imgDilate, imgReSize, Size(wShow, hShow));
+        /*resize(imgDilate, imgReSize, Size(wShow, hShow));
         imshow("Image3.2", imgReSize);*/
 #pragma endregion
 
@@ -153,8 +153,8 @@ void bepMainDetect(Mat& img, string identity) {
             //Tìm viền các hình tô đậm
             vector<int> identityNum;
             vector<int> codeNum;
-            bepDetect(identityMat, identityNum, 10, Top2Bottom_Left2Right);
-            bepDetect(codeMat, codeNum, 10, Top2Bottom_Left2Right);
+            bepDetectCircleMatrix(identityMat, identityNum, 10, Top2Bottom_Left2Right);
+            bepDetectCircleMatrix(codeMat, codeNum, 10, Top2Bottom_Left2Right);
             //myDrawContours(identityMat, codeContoursToSort);
             string strIdentityNum;
             for (int it : identityNum) {
@@ -207,7 +207,7 @@ void bepMainDetect(Mat& img, string identity) {
                 matAnswerArr.push_back(asw);
                 //
                 vector<int> valuers;
-                bepDetect(asw, valuers, 4, Left2Right_Top2Bottom);
+                bepDetectCircleMatrix(asw, valuers, 4, Left2Right_Top2Bottom);
                 string strValuers;
                 for (int it : valuers) {
                     strValuers += "|";
@@ -230,10 +230,10 @@ void bepMainDetect(Mat& img, string identity) {
                     }
                 }
                 cout << "values: " << strValuers << endl;
-                putText(outMat, strValuers, boundSubCodeBase6_Top.br(), FONT_HERSHEY_SIMPLEX, .5, BEP_SCALAR_BLUE, 2);
+                //putText(outMat, strValuers, boundSubCodeBase6_Top.br(), FONT_HERSHEY_SIMPLEX, .5, BEP_SCALAR_BLUE, 2);
             }
-            myDrawContours(outMat, subCodeBase6PointContours_Top, BEP_SCALAR_GREEN, true);
-            myDrawContours(outMat, subCodeBase6PointContours_Bottom, BEP_SCALAR_GREEN, true);
+            myDrawContours(outMat, subCodeBase6PointContours_Top, BEP_SCALAR_YELLOW, false);
+            myDrawContours(outMat, subCodeBase6PointContours_Bottom, BEP_SCALAR_YELLOW, false);
 #pragma endregion
         }
         else if (contoursToSort.size() < 4) {
@@ -264,8 +264,10 @@ int main()
 
     Mat img = imread("Resources/50_cau.jpg");
     Mat img1 = imread("Resources/50_cau_1.jpg");
+    Mat img2 = imread("Resources/50_cau_2.jpg");
     bepMainDetect(img, "50_cau");
     bepMainDetect(img1, "50_cau_1");
+    bepMainDetect(img2, "50_cau_2");
     #pragma endregion
     waitKey(0);
 }

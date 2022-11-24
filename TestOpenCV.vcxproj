@@ -146,7 +146,12 @@
   <ItemGroup>
     <Image Include="Resources\17_cau.jpg" />
     <Image Include="Resources\50_cau.jpg" />
+    <Image Include="Resources\50_cau_1.JPG" />
+    <Image Include="Resources\50_cau_2.JPG" />
+    <Image Include="Resources\50_cau_3.JPG" />
+    <Image Include="Resources\50_cau_4.JPG" />
     <Image Include="Resources\50_cau_raw.jpg" />
+    <Image Include="Resources\50_cau_raw_1.jpg" />
     <Image Include="Resources\50_cau_sau_khi_crop.jpg" />
     <Image Include="Resources\50_cau_sau_khi_crop_lan_2.jpg" />
   </ItemGroup>

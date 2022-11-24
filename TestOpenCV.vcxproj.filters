@@ -35,6 +35,21 @@
     <Image Include="Resources\50_cau_raw.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\50_cau_1.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\50_cau_2.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\50_cau_3.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\50_cau_4.JPG">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\50_cau_raw_1.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TestFindRect.h">

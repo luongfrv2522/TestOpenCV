@@ -103,7 +103,7 @@ void bepDrawPointContours(Mat& src, vector<vector<Point>> contours, Scalar color
 	}
 }
 
-void bepDetect(Mat& identityMat, vector<int>& identityNum, int roundLine, BepDetect_Type type) {
+void bepDetectCircleMatrix(Mat& identityMat, vector<int>& identityNum, int roundLine, BepDetect_Type type) {
 	function<int(vector<Point>&, vector<Point>&)> firstPred, secondPred;
 	if (type == Top2Bottom_Left2Right) {
 		firstPred = Left_Right_contour_sorter();
