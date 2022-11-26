@@ -157,11 +157,7 @@
     <Image Include="Resources\50_cau_sau_khi_crop_lan_2.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AutomaticGrading.h" />
     <ClInclude Include="Header.h" />
-    <ClInclude Include="TestFindCircle.h" />
-    <ClInclude Include="TestFindCircle2.h" />
-    <ClInclude Include="TestFindRect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\50 cau_origin.pdf" />

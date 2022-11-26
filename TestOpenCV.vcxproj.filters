@@ -55,19 +55,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TestFindRect.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestFindCircle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Header.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TestFindCircle2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AutomaticGrading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

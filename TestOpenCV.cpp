@@ -1,8 +1,6 @@
 ﻿#include "Header.h"
-#include "TestFindRect.h"
-#include "TestFindCircle.h"
-#include "TestFindCircle2.h"
-#include "AutomaticGrading.h"
+
+using namespace grd;
 
 void bepMainDetect(Mat& img, string identity) {
 	try {
@@ -46,7 +44,7 @@ void bepMainDetect(Mat& img, string identity) {
 		vector<vector<Point>> contours4BasePoint;
 		vector<vector<Point>> contoursSubBasePoint;
 		if (contoursToSort.size() >= 14) {
-			sort(contoursToSort.begin(), contoursToSort.end(), area_desc_contour_sorter());
+			sort(contoursToSort.begin(), contoursToSort.end(), Bep_AreaDesc_ContourSorter());
 			for (size_t i = 0; i < contoursToSort.size(); i++) {
 				if (i < 4) {
 					contours4BasePoint.push_back(contoursToSort[i]);
@@ -56,9 +54,9 @@ void bepMainDetect(Mat& img, string identity) {
 				}
 			}
 
-			sort(contours4BasePoint.begin(), contours4BasePoint.end(), Top_Bottom_contour_sorter());
-			sort(contours4BasePoint.begin(), contours4BasePoint.begin() + 2, Left_Right_contour_sorter());
-			sort(contours4BasePoint.begin() + 2, contours4BasePoint.end(), Left_Right_contour_sorter());
+			sort(contours4BasePoint.begin(), contours4BasePoint.end(), Bep_Top2Bottom_ContourSorter());
+			sort(contours4BasePoint.begin(), contours4BasePoint.begin() + 2, Bep_Left2Right_ContourSorter());
+			sort(contours4BasePoint.begin() + 2, contours4BasePoint.end(), Bep_Left2Right_ContourSorter());
 
 
 			Rect r1 = boundingRect(contours4BasePoint[0]);
@@ -83,8 +81,8 @@ void bepMainDetect(Mat& img, string identity) {
 			matrix = getPerspectiveTransform(src, dst);
 			warpPerspective(img, outMat, matrix, Point(w, h));
 
-			persTrans(contours4BasePoint, contours4BasePoint, matrix);
-			persTrans(contoursSubBasePoint, contoursSubBasePoint, matrix);
+			bep_PerspectiveTransform(contours4BasePoint, contours4BasePoint, matrix);
+			bep_PerspectiveTransform(contoursSubBasePoint, contoursSubBasePoint, matrix);
 			r1 = boundingRect(contours4BasePoint[0]);
 			r2 = boundingRect(contours4BasePoint[1]);
 			r3 = boundingRect(contours4BasePoint[2]);
@@ -93,7 +91,7 @@ void bepMainDetect(Mat& img, string identity) {
 			//drawToContour(outMat, contours4BasePoint);
 
 			/*BEGIN*Chia phần câu hỏi và mã đề*/
-			sort(contoursSubBasePoint.begin(), contoursSubBasePoint.end(), Top_Bottom_contour_sorter());
+			sort(contoursSubBasePoint.begin(), contoursSubBasePoint.end(), Bep_Top2Bottom_ContourSorter());
 			vector<vector<Point>> contoursSubCodeBasePoint;
 			vector<vector<Point>> contoursSubAnswerBasePoint;
 			for (size_t i = 0; i < contoursSubBasePoint.size(); i++) {
@@ -119,7 +117,7 @@ void bepMainDetect(Mat& img, string identity) {
 			};
 			bep_Sort_Lef2Right_Top2Bottom(subCodeBase4PointContours, 2);
 			//
-			myDrawContours(outMat, subCodeBase4PointContours, BEP_SCALAR_YELLOW, true);
+			bep_DrawContours(outMat, subCodeBase4PointContours, BEP_SCALAR_YELLOW, true);
 			//
 			vector<Rect> subCodeBase4Point;
 			for (rsize_t i = 0; i < subCodeBase4PointContours.size(); i++) {
@@ -158,13 +156,13 @@ void bepMainDetect(Mat& img, string identity) {
 			/*END*Tìm hình chữ nhật cơ sở của số báo danh và mã đề*/
 
 /**/		#pragma region Tìm các hình cơ sở của câu trả lời
-			sort(contoursSubAnswerBasePoint.begin(), contoursSubAnswerBasePoint.end(), Top_Bottom_contour_sorter());
+			sort(contoursSubAnswerBasePoint.begin(), contoursSubAnswerBasePoint.end(), Bep_Top2Bottom_ContourSorter());
 			vector<vector<Point>> subCodeBase6PointContours_Top = {
 				contoursSubAnswerBasePoint[0],
 				contoursSubAnswerBasePoint[1],
 				contoursSubAnswerBasePoint[2]
 			};
-			sort(subCodeBase6PointContours_Top.begin(), subCodeBase6PointContours_Top.end(), Left_Right_contour_sorter());
+			sort(subCodeBase6PointContours_Top.begin(), subCodeBase6PointContours_Top.end(), Bep_Left2Right_ContourSorter());
 			vector<Rect> subCodeBase6PointContours_Top_Bound;
 			for (rsize_t i = 0; i < subCodeBase6PointContours_Top.size(); i++) {
 				subCodeBase6PointContours_Top_Bound.push_back(boundingRect(subCodeBase6PointContours_Top[i]));
@@ -174,7 +172,7 @@ void bepMainDetect(Mat& img, string identity) {
 				contoursSubAnswerBasePoint[contoursSubAnswerBasePoint.size() - 2],
 				contoursSubAnswerBasePoint[contoursSubAnswerBasePoint.size() - 1]
 			};
-			sort(subCodeBase6PointContours_Bottom.begin(), subCodeBase6PointContours_Bottom.end(), Left_Right_contour_sorter());
+			sort(subCodeBase6PointContours_Bottom.begin(), subCodeBase6PointContours_Bottom.end(), Bep_Left2Right_ContourSorter());
 			vector<Rect> subCodeBase6PointContours_Bottom_Bound;
 			for (rsize_t i = 0; i < subCodeBase6PointContours_Bottom.size(); i++) {
 				subCodeBase6PointContours_Bottom_Bound.push_back(boundingRect(subCodeBase6PointContours_Bottom[i]));
@@ -221,8 +219,8 @@ void bepMainDetect(Mat& img, string identity) {
 				cout << "values: " << strValuers << endl;
 				//putText(outMat, strValuers, boundSubCodeBase6_Top.br(), FONT_HERSHEY_SIMPLEX, .5, BEP_SCALAR_BLUE, 2);
 			}
-			myDrawContours(outMat, subCodeBase6PointContours_Top, BEP_SCALAR_YELLOW, false);
-			myDrawContours(outMat, subCodeBase6PointContours_Bottom, BEP_SCALAR_YELLOW, false);
+			bep_DrawContours(outMat, subCodeBase6PointContours_Top, BEP_SCALAR_YELLOW, false);
+			bep_DrawContours(outMat, subCodeBase6PointContours_Bottom, BEP_SCALAR_YELLOW, false);
 /**/		#pragma endregion
 		}
 		else if (contoursToSort.size() < 4) {
