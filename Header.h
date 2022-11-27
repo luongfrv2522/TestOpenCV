@@ -167,7 +167,7 @@ namespace grd {
         }
     }
 
-    void bep_ImResizeAndShow(string& title, Mat& img, int w, int h) {
+    void bep_ImResizeAndShow(string title, Mat& img, int w, int h) {
         Mat imgReSize;
         resize(img, imgReSize, Size(w, h));
         imshow(title, imgReSize);

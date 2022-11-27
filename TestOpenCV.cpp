@@ -252,14 +252,32 @@ void bepMainDetect2Test(Mat& img, string identity) {
 		//bep_ImResizeAndShow("Image1.1", img, wShow, hShow);
 
 		cvtColor(img, imgGray, COLOR_BGR2GRAY);
-		//adaptiveThreshold(imgGray, imgThreshHold, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 45, 5);
-		GaussianBlur(imgGray, imgThreshHold, Size(5, 5), 0);
+		adaptiveThreshold(imgGray, imgThreshHold, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 45, 5);
+		bep_ImResizeAndShow("imgThreshHold5", imgThreshHold, wShow, hShow);
+		//Giãn nền
+		Mat elementDilate = getStructuringElement(MORPH_CROSS, Size(3, 3), Point(1, 1));
+		dilate(imgThreshHold, imgDilate, elementDilate, Point(-1, -1), 3);
+		bep_ImResizeAndShow("imgDilate", imgDilate, wShow, hShow);
+
+		Mat elementErode = getStructuringElement(MORPH_RECT, Size(3, 3), Point(1, 1));
+		erode(imgDilate, imgDilate, elementErode, Point(-1, -1), 3);
+		bep_ImResizeAndShow("imgErode", imgDilate, wShow, hShow);
+		//
+		//Mat gaussianBlur;
+		//GaussianBlur(imgGray, gaussianBlur, Size(5, 5), 0);
+		//bep_ImResizeAndShow("GaussianBlur", gaussianBlur, wShow, hShow);
+		//Mat thresholdMath;
+		//threshold(gaussianBlur, thresholdMath, 50, 255, THRESH_BINARY | THRESH_OTSU);
+		//bep_ImResizeAndShow("threshold", thresholdMath, wShow, hShow);
+		//GaussianBlur(imgGray, imgThreshHold, Size(5, 5), 0);
 		//
 		//bep_ImResizeAndShow("Image adaptiveThreshold", img, wShow, hShow);
 		//
-		Mat canny;
-		Canny(imgThreshHold, canny, 75, 200);
-		//bep_ImResizeAndShow("Image candy", img, wShow, hShow);
+		//Mat canny;
+		//Canny(gaussianBlur, canny, 100, 200);
+		//bep_ImResizeAndShow("Image candy", canny, wShow, hShow);
+
+		
 	}
 	catch (Exception e) {
 		cout << e.msg << endl;
@@ -276,15 +294,15 @@ int main()
 	//TestFindCircle2::Run();
 
 	//
-	Mat img = imread("Resources/50_cau.jpg");
+	/*Mat img = imread("Resources/50_cau.jpg");
 	Mat img1 = imread("Resources/50_cau_1.jpg");
 	Mat img2 = imread("Resources/50_cau_2.jpg");
 	bepMainDetect(img, "50_cau");
 	bepMainDetect(img1, "50_cau_1");
-	bepMainDetect(img2, "50_cau_2");
+	bepMainDetect(img2, "50_cau_2");*/
 
-	/*Mat img5 = imread("Resources/50_cau_5.jpg");
-	bepMainDetect2Test(img5, "50_cau_5");*/
+	Mat img5 = imread("Resources/50_cau.jpg");
+	bepMainDetect2Test(img5, "50_cau_5");
 #pragma endregion
 	waitKey(0);
 }
