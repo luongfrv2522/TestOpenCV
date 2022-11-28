@@ -284,6 +284,34 @@ void bepMainDetect2Test(Mat& img, string identity) {
 	}
 }
 
+void bepMainCropTest(Mat& img, string identity) {
+	try {
+		float w = 768, h = 1024;
+		float wShow = 576, hShow = 768;
+		//
+		float hCodeVsAnswer = h / 3;
+		Mat imgReSize, imgGray, imgThreshHold, imgDilate, outMat;
+		//
+		resize(img, img, Size(w, h));
+		//bep_ImResizeAndShow("Image1.1", img, wShow, hShow);
+
+		cvtColor(img, imgGray, COLOR_BGR2GRAY);
+
+		Mat crop1 = imgGray(Rect(0, 0, 100, 100));
+		putText(crop1, "crop1", Point(10, 50), FONT_HERSHEY_SIMPLEX, 0.5, BEP_SCALAR_GREEN, 3);
+		bep_ImResizeAndShow("crop1", crop1, 100, 100);
+
+		Mat crop2 = imgGray(Range(100, 200), Range(0, 100));
+		putText(crop2, "crop2", Point(10, 50), FONT_HERSHEY_SIMPLEX, 0.5, BEP_SCALAR_GREEN, 3);
+		bep_ImResizeAndShow("crop2", crop2, 100, 100);
+
+		bep_ImResizeAndShow("COLOR_BGR2GRAY", imgGray, wShow, hShow);
+
+	}
+	catch (Exception e) {
+		cout << e.msg << endl;
+	}
+}
 
 int main()
 {
@@ -294,15 +322,18 @@ int main()
 	//TestFindCircle2::Run();
 
 	//
-	/*Mat img = imread("Resources/50_cau.jpg");
+	Mat img = imread("Resources/50_cau.jpg");
 	Mat img1 = imread("Resources/50_cau_1.jpg");
 	Mat img2 = imread("Resources/50_cau_2.jpg");
 	bepMainDetect(img, "50_cau");
 	bepMainDetect(img1, "50_cau_1");
-	bepMainDetect(img2, "50_cau_2");*/
+	bepMainDetect(img2, "50_cau_2");
 
-	Mat img5 = imread("Resources/50_cau.jpg");
-	bepMainDetect2Test(img5, "50_cau_5");
+	/*Mat img5 = imread("Resources/50_cau.jpg");
+	bepMainDetect2Test(img5, "50_cau_5");*/
+
+	/*Mat img5 = imread("Resources/50_cau.jpg");
+	bepMainCropTest(img5, "50_cau_5");*/
 #pragma endregion
 	waitKey(0);
 }
