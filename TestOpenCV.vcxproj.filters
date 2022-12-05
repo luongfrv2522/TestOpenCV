@@ -56,6 +56,9 @@
     <Image Include="Resources\test_1.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Resources\img_after_crop.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h">

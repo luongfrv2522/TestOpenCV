@@ -155,6 +155,7 @@
     <Image Include="Resources\50_cau_raw_1.jpg" />
     <Image Include="Resources\50_cau_sau_khi_crop.jpg" />
     <Image Include="Resources\50_cau_sau_khi_crop_lan_2.jpg" />
+    <Image Include="Resources\img_after_crop.jpg" />
     <Image Include="Resources\test_1.jpg" />
   </ItemGroup>
   <ItemGroup>
