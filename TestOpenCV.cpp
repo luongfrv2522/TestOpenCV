@@ -581,9 +581,9 @@ int main()
 	Mat img = imread("Resources/50_cau.jpg");
 	Mat img1 = imread("Resources/50_cau_1.jpg");
 	Mat img2 = imread("Resources/50_cau_2.jpg");
-	//bepMainDetect(img, "50_cau");
-	//bepMainDetect(img1, "50_cau_1");
-	//bepMainDetect(img2, "50_cau_2");
+	bepMainDetect(img, "50_cau");
+	/*bepMainDetect(img1, "50_cau_1");
+	bepMainDetect(img2, "50_cau_2");*/
 
 	/*Mat img5 = imread("Resources/50_cau.jpg");
 	bepMainDetect2Test(img5, "50_cau_5");*/
@@ -591,7 +591,7 @@ int main()
 	/*Mat img5 = imread("Resources/50_cau.jpg");
 	bepMainCropTest(img5, "50_cau_5");*/
 
-	bepMainDetectTest3(img, "50_cau");
+	//bepMainDetectTest3(img, "50_cau");
 #pragma endregion
 	waitKey(0);
 }
